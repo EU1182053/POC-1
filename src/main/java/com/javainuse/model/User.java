@@ -2,6 +2,8 @@ package com.javainuse.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,11 +25,11 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@NotEmpty
+	
 	@Size(min = 5, message = "first name should have at least 5 characters")
 	private String firstName;
 	
-	@NotEmpty
+	
 	@Size(min = 5, message = "last name should have at least 5 characters")
 	private String lastName;
 	
@@ -39,11 +41,11 @@ public class User {
 	@Size(min = 8, message = "password should have at least 8 characters")
 	private String password;
 	
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private Date DOB;
 	
-	private String DOB;
-	
-	
-	private String joiningDate;
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	private Date joiningDate;
 	
 	
 	private Integer pincode;

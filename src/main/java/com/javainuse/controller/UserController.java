@@ -1,8 +1,8 @@
 package com.javainuse.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,8 +61,7 @@ public class UserController {
 		return ResponseEntity.ok(updateUser);
 
 	}
-	
-	
+
 	@PutMapping(value = "/delete/soft/{id}")
 	public ResponseEntity<User> softDelete(@PathVariable Integer id) {
 		User updateUser = userRepository.findById(id).get();
@@ -78,14 +77,45 @@ public class UserController {
 	@DeleteMapping(value = "/delete/hard/{id}")
 	public void hardDelete(@PathVariable Integer id) {
 		userRepository.deleteById(id);
-	
-	
 
 	}
 
 	@GetMapping(value = "/searchUsersByFirstNameLastNamePincode")
-	public List<User> getUsers(@RequestParam String firstName, @RequestParam(required = false) String lastName, @RequestParam(required = false, defaultValue = "1") Integer pincode) {
+	public List<User> getUsers(@RequestParam(required = false) String firstName,
+			@RequestParam(required = false) String lastName,
+			@RequestParam(required = false, defaultValue = "1") Integer pincode) {
 		List<User> users = userRepository.findByFirstNameOrLastNameOrPincode(firstName, lastName, pincode);
+		return users;
+	}
+	
+	@GetMapping(value = "/sortByJoiningDate")
+	public List<User> sortUsersByJoiningDate(User user){
+		
+		List<User> users = userService.getUsers();
+		Comparator<User> comparator = (u1 ,u2) -> {
+			return u1.getJoiningDate().compareTo(u2.getJoiningDate());
+		};
+		
+		Collections.sort(users, comparator);
+		
+		
+		
+		return users;
+	}
+	
+	
+	@GetMapping(value = "/sortByDOB")
+	public List<User> sortUsersByDOB(User user){
+		
+		List<User> users = userService.getUsers();
+		Comparator<User> comparator = (u1 ,u2) -> {
+			return u1.getDOB().compareTo(u2.getDOB());
+		};
+		
+		Collections.sort(users, comparator);
+		
+		
+		
 		return users;
 	}
 
