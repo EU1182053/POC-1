@@ -7,6 +7,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,7 @@ public class UserController {
 		updateUser.setDOB(userDetails.getDOB());
 		updateUser.setJoiningDate(userDetails.getJoiningDate());
 		updateUser.setFirstName(userDetails.getFirstName());
+		updateUser.setLastName(userDetails.getLastName());
 		updateUser.setPassword(userDetails.getPassword());
 		updateUser.setUsername(userDetails.getUsername());
 
@@ -59,7 +61,32 @@ public class UserController {
 		return ResponseEntity.ok(updateUser);
 
 	}
-
 	
+	
+	@PutMapping(value = "/delete/soft/{id}")
+	public ResponseEntity<User> softDelete(@PathVariable Integer id) {
+		User updateUser = userRepository.findById(id).get();
+
+		updateUser.setDeleted(1);
+
+		userRepository.save(updateUser);
+
+		return ResponseEntity.ok(updateUser);
+
+	}
+
+	@DeleteMapping(value = "/delete/hard/{id}")
+	public void hardDelete(@PathVariable Integer id) {
+		userRepository.deleteById(id);
+	
+	
+
+	}
+
+	@GetMapping(value = "/searchUsersByFirstNameLastNamePincode")
+	public List<User> getUsers(@RequestParam String firstName, @RequestParam(required = false) String lastName, @RequestParam(required = false, defaultValue = "1") Integer pincode) {
+		List<User> users = userRepository.findByFirstNameOrLastNameOrPincode(firstName, lastName, pincode);
+		return users;
+	}
 
 }
